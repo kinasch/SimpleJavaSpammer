@@ -8,6 +8,13 @@ import java.awt.event.KeyEvent;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
 
+/**
+ *
+ * @author kinasch
+ * @version 1.0
+ *
+ */
+
 public class Spammer implements Runnable {
 
     private JFrame frame = new JFrame("Spam Test");
