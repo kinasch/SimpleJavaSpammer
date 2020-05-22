@@ -11,8 +11,7 @@ import static java.awt.Component.LEFT_ALIGNMENT;
 /**
  *
  * @author kinasch
- * @version 1.0
- *
+ * @version 1.0 *
  */
 
 public class Spammer implements Runnable {
