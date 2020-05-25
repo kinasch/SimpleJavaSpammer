@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeListener;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
 
@@ -25,8 +26,11 @@ public class Spammer implements Runnable {
     private JPanel pText = new JPanel();
     private JPanel pDelay = new JPanel();
     private JPanel pKnopf = new JPanel();
+    private JComboBox cb = new JComboBox();
+    private JPanel pCB = new JPanel();
 
     private boolean running = false;
+    private boolean old = false;
 
     public Spammer(){
         try {
@@ -56,9 +60,17 @@ public class Spammer implements Runnable {
             }
         });
 
-        JPanel pText = new JPanel();
-        JPanel pDelay = new JPanel();
-        JPanel pKnopf = new JPanel();
+        String[] sa = {"Old", "New"};
+        cb.addItem(sa[0]);
+        cb.addItem(sa[1]);
+        cb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cbActionPerformed(e);
+            }
+        });
+
+        pCB.add(cb);
 
         pText.add(l1);
         pText.add(f1);
@@ -68,6 +80,7 @@ public class Spammer implements Runnable {
 
         pKnopf.add(bu);
 
+        frame.getContentPane().add(pCB);
         frame.getContentPane().add(pText);
         frame.getContentPane().add(pDelay);
         frame.getContentPane().add(pKnopf);
@@ -79,37 +92,41 @@ public class Spammer implements Runnable {
     }
 
     public void run(){
-        Robot robot = null;
-        try{
-            robot = new Robot();
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-        int[] keys = new int[f1.getText().length()];
-        if((int) f2.getValue()<0){
-            f2.setValue(0);
-        }
-        int interval = (int) f2.getValue();
-        for(int i=0;i<keys.length;i++){
-            keys[i] = KeyEvent.getExtendedKeyCodeForChar(f1.getText().charAt(i));
-        }
-        try{
-            Thread.sleep(3000);
-        } catch (Exception ie){
-            ie.printStackTrace();
-        }
-        bu.setEnabled(true);
-        bu.setText("Stop");
-        while(running) {
-            for (int i = 0; i < keys.length; i++) {
-                robot.keyPress(keys[i]);
-                robot.keyRelease(keys[i]);
-            }
+        if(old) {
+            Robot robot = null;
             try {
-                Thread.sleep(interval);
+                robot = new Robot();
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            int[] keys = new int[f1.getText().length()];
+            if ((int) f2.getValue() < 0) {
+                f2.setValue(0);
+            }
+            int interval = (int) f2.getValue();
+            for (int i = 0; i < keys.length; i++) {
+                keys[i] = KeyEvent.getExtendedKeyCodeForChar(f1.getText().charAt(i));
+            }
+            try {
+                Thread.sleep(3000);
+            } catch (Exception ie) {
+                ie.printStackTrace();
+            }
+            bu.setEnabled(true);
+            bu.setText("Stop");
+            while (running) {
+                for (int i = 0; i < keys.length; i++) {
+                    robot.keyPress(keys[i]);
+                    robot.keyRelease(keys[i]);
+                }
+                try {
+                    Thread.sleep(interval);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if(!old){
+
         }
     }
 
@@ -127,5 +144,15 @@ public class Spammer implements Runnable {
             f2.setEnabled(true);
             bu.setText("Spam");
         }
+    }
+
+    public void cbActionPerformed(ActionEvent evt){
+        String name = (String)cb.getSelectedItem();
+        if(name.equals("Old")){
+            old = true;
+        } else if(name.equals("New")){
+            old = false;
+        }
+        System.out.println("Old: "+old);
     }
 }
