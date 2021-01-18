@@ -2,10 +2,7 @@ package spammer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.*;
 
 import static java.awt.Component.LEFT_ALIGNMENT;
 
@@ -47,7 +44,6 @@ public class Spammer implements Runnable {
     public void fenster(){
         //WIP, weil ich keine Ahnung habe ngl
 
-
         f1.setPreferredSize(new Dimension(100,60));
         f1.setAlignmentX(LEFT_ALIGNMENT);
         f1.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -60,7 +56,7 @@ public class Spammer implements Runnable {
             }
         });
 
-        String[] sa = {"Old", "New"};
+        String[] sa = {"TextSpammer", "MouseClickSpammer"};
         cb.addItem(sa[0]);
         cb.addItem(sa[1]);
         cb.addActionListener(new ActionListener() {
@@ -99,6 +95,37 @@ public class Spammer implements Runnable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            int interval = (int) f2.getValue();
+            try {
+                Thread.sleep(5000);
+            } catch (Exception ie) {
+                ie.printStackTrace();
+            }
+            bu.setEnabled(true);
+            bu.setText("Stop");
+            while (interval>0) {
+                robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                robot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                try {
+                    Thread.sleep(100);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                interval--;
+            }
+            buActionPerformed(null);
+        } else if(!old){
+            Robot robot = null;
+            try {
+                robot = new Robot();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             int[] keys = new int[f1.getText().length()];
             if ((int) f2.getValue() < 0) {
                 f2.setValue(0);
@@ -114,19 +141,33 @@ public class Spammer implements Runnable {
             }
             bu.setEnabled(true);
             bu.setText("Stop");
+            int counter = 0;
             while (running) {
                 for (int i = 0; i < keys.length; i++) {
-                    robot.keyPress(keys[i]);
-                    robot.keyRelease(keys[i]);
+                    if(f1.getText().charAt(i)=='/'){
+                        robot.keyPress(KeyEvent.VK_SHIFT);
+                        robot.keyPress(KeyEvent.VK_7);
+                        robot.keyRelease(KeyEvent.VK_7);
+                        robot.keyRelease(KeyEvent.VK_SHIFT);
+                    }
+                    if(f1.getText().charAt(i)=='_') {
+                        robot.keyPress(KeyEvent.VK_SHIFT);
+                        robot.keyPress(KeyEvent.VK_MINUS);
+                        robot.keyRelease(KeyEvent.VK_MINUS);
+                        robot.keyRelease(KeyEvent.VK_SHIFT);
+                    }
+                    else {
+                        robot.keyPress(keys[i]);
+                        robot.keyRelease(keys[i]);
+                    }
                 }
                 try {
                     Thread.sleep(interval);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                counter++;
             }
-        } else if(!old){
-
         }
     }
 
@@ -148,11 +189,15 @@ public class Spammer implements Runnable {
 
     public void cbActionPerformed(ActionEvent evt){
         String name = (String)cb.getSelectedItem();
-        if(name.equals("Old")){
+        if(name.equals("MouseClickSpammer")){
             old = true;
-        } else if(name.equals("New")){
+            f1.setVisible(false);
+            l1.setVisible(false);
+            l2.setText("Repeats: ");
+        } else if(name.equals("TextSpammer")){
             old = false;
+            f1.setVisible(true);
+            l1.setVisible(true);
         }
-        System.out.println("Old: "+old);
     }
 }
