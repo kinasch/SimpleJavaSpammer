@@ -158,7 +158,7 @@ public class Spammer implements Runnable {
                     }
                     else {
                         robot.keyPress(keys[i]);
-                        robot.keyRelease(keys[i]);
+                        //robot.keyRelease(keys[i]);
                     }
                 }
                 try {
