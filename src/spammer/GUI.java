@@ -19,7 +19,7 @@ public class GUI {
     private JLabel l2 = new JLabel("Delay");
     private JTextArea f1 = new JTextArea();
     private JSpinner f2 = new JSpinner();
-    private JButton bu = new JButton("Spam");
+    public JButton bu = new JButton("Spam");
     private JPanel pText = new JPanel();
     private JPanel pDelay = new JPanel();
     private JPanel pKnopf = new JPanel();
@@ -27,7 +27,7 @@ public class GUI {
     private JPanel pCB = new JPanel();
 
     private boolean running = false;
-    private boolean old = false;
+    public boolean old = false;
 
     KeyboardSpammer keyboardSpammer = new KeyboardSpammer();
     MouseSpammer mouseSpammer = new MouseSpammer();
